@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bambo Pizza Bar - Menu</title>
+  <link rel="stylesheet" href="styles/styles.css?v=2">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- Navbar Minimaliste -->
+  <nav class="app-navbar">
+    <button class="nav-icon-btn" onclick="openMenuDrawer()" title="Menu">
+      ☰
+    </button>
+    <div class="nav-logo">Bambo Pizza Bar</div>
+
+    <button class="nav-icon-btn" onclick="toggleSearch()" title="Kërko">
+      <img src="assets/loop.png" class="btn-location">
+    </button>
+  </nav>
+
+<!-- Kutia e Kërkimit (Slide-down) -->
+  <div class="search-slide-container" id="searchSlideContainer">
+    <input type="text" id="searchInput" placeholder="Kërko ushqimin ose pijen...">
+  </div>
+
+<!-- Kontrolet Sticky (Kategoritë me side-scroll) -->
+  <div class="sticky-controls">
+    <div id="mainCategories" class="cat-scroll"></div>
+  </div>
+
+<!-- Zona e Produkteve -->
+  <main class="menu-container">
+    <h2 id="currentCategoryTitle" class="section-title"></h2>
+    <div id="productsList" class="products-list"></div>
+  </main>
+
+<!-- Footer-i Elegant -->
+  <footer class="restaurant-footer">
+    <div class="footer-content">
+      <div class="footer-info">
+        <h3>Bambo Pizza Bar</h3>
+        <p><a href="tel:+355694884550" class="nn">+355694884550</a></p>
+      </div>
+      <div class="footer-links">
+        <a href="https://www.instagram.com/bambo_pizza?igsh=MW4zMTRjeWNoMG9tYg==" target="_blank" class="footer-btn"><img class="btn-location" src="assets/instagram.png">Instagram</a>
+        <a href="https://maps.app.goo.gl/j15mpzdMriJyNZQN9" target="_blank" class="footer-btn"> <img class="btn-location" src="assets/map.png">Location</a>
+        <a href="https://wa.me/355694884550" target="_blank" class="footer-btn"><img class="btn-location" src="assets/whatsapp(1).png">Contact</a>
+      </div>
+
+      <div class="footer-bottom">
+&copy; 2026 <a href="about.html" target="_blank" class="nn">h.gjoni20</a>. All Rights Reserved. Developed exclusively for Bambo Pizza Bar.
+      </div>
+    </div>
+  </footer>
+
+<!-- Drawer Menu (Hamburger Panel) -->
+  <div class="drawer-overlay" id="drawerOverlay" onclick="closeMenuDrawer()">
+    <div class="drawer-content" onclick="event.stopPropagation()">
+      <div class="drawer-header">
+        <h3>Bambo Menu</h3>
+        <button class="close-drawer-btn" onclick="closeMenuDrawer()">✕</button>
+      </div>
+      <div class="drawer-body">
+        <div class="drawer-section">
+          <label id="langLabel" style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px; display:block;">Gjuha / Language</label>
+          <select id="langSelector" class="drawer-select" onchange="changeLanguage(this.value)">
+            <option value="sq">🇦🇱 Shqip</option>
+            <option value="en">🇬🇧 English</option>
+            <option value="it">🇮🇹 Italiano</option>
+          </select>
+        </div>
+        <a href="https://maps.app.goo.gl/j15mpzdMriJyNZQN9" target="_blank" class="drawer-link-btn" id="drawerLocation">Location</a>
+        <a href="https://wa.me/355694884550" target="_blank" class="drawer-link-btn" id="drawerContact">Contact</a>
+        <a href="https://www.instagram.com/bambo_pizza?igsh=MW4zMTRjeWNoMG9tYg==" target="_blank" class="drawer-link-btn">Instagram</a>
+      </div>
+    </div>
+  </div>
+
+<!-- Butoni Back to Top -->
+  <button class="back-to-top" id="backToTopBtn" onclick="scrollToTop()">↑</button>
+
+  <script src="js/script.js?v=2"></script>
+</body>
+</html>

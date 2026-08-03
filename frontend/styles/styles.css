@@ -1,0 +1,567 @@
+:root {
+  --bg-dark: #0f1716;         
+  --card-bg: #162220;         
+  --accent-gold: #c5a880;     
+  --text-main: #ffffff;       
+  --text-muted: #94a3b8;      
+  --border-color: #223431;    
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  padding-bottom: 30px;
+}
+
+/* 1. Navbar Minimaliste */
+.app-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: var(--bg-dark);
+  border-bottom: 1px solid var(--border-color);
+  max-width: 800px;
+  margin: 0 auto;
+  position: sticky;
+  top: 0;
+  z-index: 1001;
+}
+
+.nav-logo {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--accent-gold);
+  letter-spacing: 0.5px;
+}
+
+.nav-icon-btn {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.nav-icon-btn:hover {
+  border-color: var(--accent-gold);
+  color: var(--accent-gold);
+}
+
+.nav-icon-btn:active {
+  transform: scale(0.92);
+}
+
+/* 2. Search me Slide-down */
+.search-slide-container {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+  background-color: var(--card-bg);
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 15px;
+  border-bottom: 0px solid var(--border-color);
+}
+
+.search-slide-container.active {
+  max-height: 80px;
+  padding: 12px 15px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.search-slide-container input {
+  width: 100%;
+  padding: 11px 16px;
+  border-radius: 22px;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  font-size: 0.92rem;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.search-slide-container input:focus {
+  border-color: var(--accent-gold);
+}
+
+/* 3. Kontrolet Sticky & Side-Scroll i Kategorive */
+.sticky-controls {
+  position: sticky;
+  top: 71px;
+  z-index: 1000;
+  background-color: rgba(15, 23, 22, 0.95);
+  backdrop-filter: blur(10px);
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  border-bottom: 1px solid var(--border-color);
+  overflow: hidden;
+  min-width: 0; /* FIX: lejon që fëmija flex të mos e detyrojë containerin të zgjerohet */
+}
+
+.cat-scroll {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  padding: 12px 15px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  box-sizing: border-box;
+  min-width: 0; /* FIX: siguri shtesë kundër overflow të "thyer" në flex containers */
+}
+
+.cat-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.cat-scroll {
+  cursor: grab;
+  user-select: none;
+}
+
+.cat-scroll.dragging {
+  cursor: grabbing;
+}
+
+.cat-scroll.dragging .cat-btn {
+  pointer-events: none; /* mos u kliko butonat gabimisht ndërsa tërheq */
+}
+
+.cat-btn {
+  flex: 0 0 auto !important;
+  white-space: nowrap !important;
+  background-color: var(--card-bg);
+  color: var(--text-muted);
+  border: 1px solid var(--border-color);
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  user-select: none;
+}
+
+.cat-btn.active {
+  background-color: var(--accent-gold);
+  color: var(--bg-dark);
+  border-color: var(--accent-gold);
+  box-shadow: 0 4px 12px rgba(197, 168, 128, 0.25);
+}
+
+/* 4. Zona e Produkteve & Animacionet Fade-in */
+.menu-container {
+  padding: 24px 15px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.section-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: var(--accent-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.products-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.product-card {
+  display: flex;
+  align-items: center;
+  background-color: var(--card-bg);
+  border-radius: 14px;
+  padding: 14px;
+  border: 1px solid var(--border-color);
+  gap: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+  animation: fadeInUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.product-card:active {
+  transform: scale(0.98);
+}
+
+.product-img {
+  width: 80px;
+  height: 80px;
+  border-radius: 10px;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid var(--border-color);
+}
+
+.product-info {
+  flex-grow: 1;
+}
+
+.product-name {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--text-main);
+}
+
+.product-desc {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.product-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.product-price {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--accent-gold);
+}
+
+.pizza-prices {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--accent-gold);
+}
+
+.pizza-prices span {
+  background: rgba(197, 168, 128, 0.08);
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+}
+
+/* 5. Drawer Menu (Hamburger) */
+.drawer-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(4px);
+  z-index: 2000;
+  display: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.drawer-overlay.active {
+  display: flex;
+  opacity: 1;
+}
+
+.drawer-content {
+  background-color: var(--card-bg);
+  width: 280px;
+  height: 100%;
+  border-right: 1px solid var(--border-color);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  transform: translateX(-100%);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.drawer-overlay.active .drawer-content {
+  transform: translateX(0);
+}
+
+.drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 15px;
+}
+
+.drawer-header h3 {
+  color: var(--accent-gold);
+  font-size: 1.1rem;
+}
+
+.close-drawer-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.drawer-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.drawer-section {
+  background: var(--bg-dark);
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  margin-bottom: 5px;
+}
+
+.drawer-select {
+  width: 100%;
+  background: var(--card-bg);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  padding: 8px;
+  border-radius: 8px;
+  outline: none;
+  font-size: 0.9rem;
+}
+
+.drawer-link-btn {
+  background: var(--bg-dark);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  padding: 12px 15px;
+  border-radius: 10px;
+  text-align: left;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: block;
+  transition: all 0.2s ease;
+}
+
+.drawer-link-btn:hover {
+  border-color: var(--accent-gold);
+  color: var(--accent-gold);
+}
+
+/* 6. Footer-i i plotë */
+.restaurant-footer {
+  background-color: var(--card-bg);
+  border-top: 1px solid var(--border-color);
+  padding: 35px 15px 25px 15px;
+  margin-top: 50px;
+}
+
+.footer-content {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: center;
+}
+
+.footer-info h3 {
+  color: var(--accent-gold);
+  font-size: 1.15rem;
+  margin-bottom: 6px;
+}
+
+.footer-info p {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.footer-btn {
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  padding: 9px 18px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.footer-btn:hover {
+  border-color: var(--accent-gold);
+  color: var(--accent-gold);
+}
+
+.footer-btn:active {
+  transform: scale(0.96);
+}
+
+.footer-bottom {
+  border-top: 1px solid var(--border-color);
+  padding-top: 18px;
+  margin-top: 5px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* Butoni Back to Top */
+.back-to-top {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  background-color: var(--accent-gold);
+  color: var(--bg-dark);
+  border: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  font-weight: bold;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+  z-index: 999;
+}
+
+.btn-location {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  width: 25px;
+  height: 25px;
+  transition: transform 0.3s;
+}
+
+.nn, 
+.nn:link, 
+.nn:visited, 
+.nn:hover, 
+.nn:active {
+  color: #ffffff;
+  text-decoration: none; 
+}
+
+body.no-scroll {
+  overflow: hidden;
+}
+
+.error-msg {
+  color: var(--text-muted);
+  text-align: center;
+  padding: 20px;
+}
+
+.product-card.clickable-card {
+  cursor: pointer;
+}
+
+#backToTopBtn {
+  display: none;
+}
+#backToTopBtn.show {
+  display: flex;
+}
+
+/* Stilimi i Modalit (Garniturës) */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 20px;
+}
+
+.modal-box {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  padding: 20px;
+  border-radius: 12px;
+  max-width: 400px;
+  width: 100%;
+  color: var(--text-main);
+}
+
+.modal-title {
+  color: var(--accent-gold);
+  margin-bottom: 8px;
+}
+
+.modal-subtitle {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 15px;
+}
+
+.modal-options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.modal-option-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.modal-submit-btn {
+  width: 100%;
+  background: var(--accent-gold);
+  color: var(--bg-dark);
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
