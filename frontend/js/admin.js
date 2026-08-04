@@ -846,3 +846,160 @@ async function deleteProduct(id) {
     alert(err.message);
   }
 }
+
+async function handleChangePassword(event) {
+  event.preventDefault();
+
+  const currentPassword = document.getElementById("currentPassword").value;
+  const newPassword = document.getElementById("newPassword").value;
+
+  if (newPassword.length < 6) {
+    alert("Fjalëkalimi i ri duhet të ketë të paktën 6 karaktere.");
+    return;
+  }
+
+  try {
+    const response = await fetch("/api/admin/password", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ currentPassword, newPassword }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        alert("Sesioni yt ka skaduar. Ju lutem kyçuni përsëri.");
+        showLoginSection();
+        return;
+      }
+      throw new Error(data.error || "Dështoi ndryshimi i fjalëkalimit.");
+    }
+
+    alert(data.message || "Fjalëkalimi u ndryshua me sukses!");
+    
+    document.getElementById("currentPassword").value = "";
+    document.getElementById("newPassword").value = "";
+
+  } catch (err) {
+    console.error("❌ Gabim gjatë ndryshimit të fjalëkalimit:", err);
+    alert(err.message);
+  }
+}
+
+
+// ===============================
+// PASSWORD VISIBILITY TOGGLE (SYRI)
+// ===============================
+function togglePasswordVisibility(fieldId, btn) {
+  const input = document.getElementById(fieldId);
+  if (input.type === "password") {
+    input.type = "text";
+    btn.textContent = "🙈";
+  } else {
+    input.type = "password";
+    btn.textContent = "👁️";
+  }
+}
+
+// ===============================
+// TOGGLE PASSWORD SECTION (HAP/MBYLL)
+// ===============================
+function togglePasswordSection() {
+  const card = document.getElementById("passwordSectionCard");
+  card.classList.toggle("hidden");
+  
+  if (!card.classList.contains("hidden")) {
+    // Pastro fushat kur hapet
+    document.getElementById("currentPassword").value = "";
+    document.getElementById("newPassword").value = "";
+    document.getElementById("confirmPassword").value = "";
+  }
+}
+
+// ===============================
+// LOGIN (I përshtatur për form submit / Enter)
+// ===============================
+async function handleLogin(event) {
+  if (event) event.preventDefault(); // Parandalon rifreskimin e faqes dhe kap Enter nga PC
+
+  const passInput = document.getElementById("adminPassword");
+  const errorText = document.getElementById("loginError");
+  const password = passInput.value;
+
+  try {
+    const res = await fetch("/api/admin/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ password }),
+    });
+
+    const data = await res.json().catch(() => ({}));
+
+    if (!res.ok) {
+      throw new Error(data.error || "Fjalëkalim i gabuar!");
+    }
+
+    errorText.classList.add("hidden");
+    passInput.value = "";
+    showAdminPanel();
+  } catch (err) {
+    console.error("❌ Gabim gjatë login:", err);
+    errorText.textContent = err.message || "Fjalëkalim i gabuar!";
+    errorText.classList.remove("hidden");
+    passInput.value = "";
+  }
+}
+
+// ===============================
+// CHANGE PASSWORD (Me validim në frontend për dy fushat e reja)
+// ===============================
+async function handleChangePassword(event) {
+  event.preventDefault();
+
+  const currentPassword = document.getElementById("currentPassword").value;
+  const newPassword = document.getElementById("newPassword").value;
+  const confirmPassword = document.getElementById("confirmPassword").value;
+
+  // Validim në frontend: Krahasimi nqs fjalëkalimet e reja janë të barabarta
+  if (newPassword !== confirmPassword) {
+    alert("Fjalëkalimet e reja nuk përputhen me njëra-tjetrën!");
+    return;
+  }
+
+  if (newPassword.length < 6) {
+    alert("Fjalëkalimi i ri duhet të ketë të paktën 6 karaktere.");
+    return;
+  }
+
+  try {
+    const response = await fetch("/api/admin/password", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ currentPassword, newPassword }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        alert("Sesioni yt ka skaduar. Ju lutem kyçuni përsëri.");
+        showLoginSection();
+        return;
+      }
+      throw new Error(data.error || "Dështoi ndryshimi i fjalëkalimit.");
+    }
+
+    alert(data.message || "Fjalëkalimi u ndryshua me sukses!");
+    
+    // Mbyll seksionin dhe pastro fushat pas suksesit
+    togglePasswordSection();
+
+  } catch (err) {
+    console.error("❌ Gabim gjatë ndryshimit të fjalëkalimit:", err);
+    alert(err.message);
+  }
+}

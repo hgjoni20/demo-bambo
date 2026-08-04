@@ -6,7 +6,12 @@ const multer = require("multer");
 const sharp = require("sharp");
 const db = require("./db");
 
-const upload = multer({ storage: multer.memoryStorage() });
+const upload = multer({ 
+  storage: multer.memoryStorage(),
+  limits: { 
+    fileSize: 10 * 1024 * 1024 
+  }
+});
 const requireAdmin = require('../middleware/requireAdmin');
 const bcrypt = require('bcrypt');
 
@@ -15,13 +20,78 @@ router.get('/check', requireAdmin, (req, res) => {
   res.json({ loggedIn: true });
 });
 
+//reset password function here 
+router.put('/password', requireAdmin, async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+
+
+  if (!currentPassword || !newPassword) {
+    return res.status(400).json({ error: "Plotësoni fjalëkalimin aktual dhe atë të ri." });
+  }
+
+  if (newPassword.length < 6) {
+    return res.status(400).json({ error: "Fjalëkalimi i ri duhet të ketë të paktën 6 karaktere." });
+  }
+
+  try {
+
+    db.get(`SELECT * FROM admin LIMIT 1`, async (err, admin) => {
+      if (err) {
+        return res.status(500).json({ error: "Gabim në databazë." });
+      }
+
+      if (!admin) {
+        return res.status(404).json({ error: "Llogaria e adminit nuk u gjet." });
+      }
+
+     
+      const isMatch = await bcrypt.compare(currentPassword, admin.password_hash);
+      if (!isMatch) {
+        return res.status(401).json({ error: "Fjalëkalimi aktual është i pasaktë." });
+      }
+
+    
+      const saltRounds = 10;
+      const newPasswordHash = await bcrypt.hash(newPassword, saltRounds);
+
+      db.run(
+        `UPDATE admin SET password_hash = ? WHERE id = ?`,
+        [newPasswordHash, admin.id],
+        function (updateErr) {
+          if (updateErr) {
+            return res.status(500).json({ error: "Dështoi përditësimi i fjalëkalimit." });
+          }
+
+          return res.json({ success: true, message: "Fjalëkalimi u ndryshua me sukses!" });
+        }
+      );
+    });
+  } catch (error) {
+    return res.status(500).json({ error: "Ndodhi një gabim i brendshëm në server." });
+  }
+});
 
 router.post('/login', async (req, res) => {
   const { password } = req.body;
-  const match = await bcrypt.compare(password, process.env.ADMIN_PASSWORD_HASH);
-  if (!match) return res.status(401).json({ error: "Fjalëkalim i gabuar!" });
-  req.session.isAdmin = true;
-  res.json({ success: true });
+
+  if (!password) {
+    return res.status(400).json({ error: "Fut fjalëkalimin." });
+  }
+
+  // Marrim të vetmin admin që ekziston në tabelë
+  db.get(`SELECT * FROM admin LIMIT 1`, async (err, admin) => {
+    if (err || !admin) {
+      return res.status(401).json({ error: "Gabim në sistem." });
+    }
+
+    const match = await bcrypt.compare(password, admin.password_hash);
+    if (!match) {
+      return res.status(401).json({ error: "Fjalëkalim i gabuar." });
+    }
+
+    req.session.isAdmin = true;
+    res.json({ success: true, message: "Je loguar me sukses!" });
+  });
 });
 
 // Route për logout — PA requireAdmin gjithashtu.

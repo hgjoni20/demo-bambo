@@ -40,4 +40,20 @@ db.run(
   }
 );
 
+
+
+
+// Krijimi i tabelës së adminit në db.js
+db.serialize(() => {
+  // Krijon vetëm tabelën nëse nuk ekziston, pa futur fjalëkalim të paracaktuar nga kodi
+  db.run(`CREATE TABLE IF NOT EXISTS admin (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    password_hash TEXT NOT NULL
+  )`, (err) => {
+    if (!err) {
+      console.log("-> Tabela 'admin' u verifikua/krijua me sukses.");
+    }
+  });
+});
+
 module.exports = db;

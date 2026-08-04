@@ -10,16 +10,22 @@
 </head>
 <body>
 
-  <!-- SEKTORI I LOGIN-IT -->
+<!-- SEKTORI I LOGIN-IT -->
   <div id="loginSection" class="login-container">
     <div class="admin-card">
       <h2 class="section-title admin-title-center">Admin Login</h2>
-      <div class="admin-form-group">
-        <label for="adminPassword">Fjalëkalimi i Panelit</label>
-        <input type="password" id="adminPassword" class="admin-input" placeholder="Fut fjalëkalimin...">
-        <span id="loginError" class="error-text hidden">Fjalëkalim i gabuar!</span>
-      </div>
-      <button class="admin-btn" onclick="handleLogin()">Hyr në Panel</button>
+      <!-- Forma lejon shtypjen e Enter nga PC -->
+      <form onsubmit="handleLogin(event)">
+        <div class="admin-form-group">
+          <label for="adminPassword">Fjalëkalimi i Panelit</label>
+          <div class="admin-password-wrapper">
+            <input type="password" id="adminPassword" class="admin-input" required placeholder="Fut fjalëkalimin...">
+            <button type="button" class="admin-eye-btn" onclick="togglePasswordVisibility('adminPassword', this)">👁️</button>
+          </div>
+          <span id="loginError" class="error-text hidden">Fjalëkalim i gabuar!</span>
+        </div>
+        <button type="submit" class="admin-btn">Hyr në Panel</button>
+      </form>
     </div>
   </div>
 
@@ -27,9 +33,43 @@
   <div id="adminPanelSection" class="admin-wrapper hidden">
     <div class="admin-header-row">
       <h2 class="section-title" id="formTitle">Shto Produkt të Ri</h2>
-      <button class="footer-btn admin-logout-btn" onclick="handleLogout()">Dil (Logout)</button>
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <button type="button" class="admin-btn" style="width: auto; padding: 10px 16px; font-size: 0.85rem; background: var(--card-bg); color: var(--accent-gold); border: 1px solid var(--accent-gold);" onclick="togglePasswordSection()">Ndrysho Fjalëkalimin</button>
+        <button class="footer-btn admin-logout-btn" onclick="handleLogout()">Dil (Logout)</button>
+      </div>
     </div>
 
+    <!-- SEKTORI I FSHEHUR PËR NDRYSHIMIN E FJALËKALIMIT (Hapet me Buton) -->
+    <div id="passwordSectionCard" class="admin-card hidden">
+      <h3 class="admin-subtitle">Ndrysho Fjalëkalimin e Adminit</h3>
+      <form id="changePasswordForm" onsubmit="handleChangePassword(event)">
+        <div class="admin-form-group">
+          <label for="currentPassword">Fjalëkalimi Aktual</label>
+          <div class="admin-password-wrapper">
+            <input type="password" id="currentPassword" class="admin-input" required placeholder="Fjalëkalimi aktual...">
+            <button type="button" class="admin-eye-btn" onclick="togglePasswordVisibility('currentPassword', this)">👁️</button>
+          </div>
+        </div>
+        <div class="admin-form-group">
+          <label for="newPassword">Fjalëkalimi i Ri (Min. 6 karaktere)</label>
+          <div class="admin-password-wrapper">
+            <input type="password" id="newPassword" class="admin-input" required placeholder="Fjalëkalimi i ri...">
+            <button type="button" class="admin-eye-btn" onclick="togglePasswordVisibility('newPassword', this)">👁️</button>
+          </div>
+        </div>
+        <div class="admin-form-group">
+          <label for="confirmPassword">Konfirmo Fjalëkalimin e Ri</label>
+          <div class="admin-password-wrapper">
+            <input type="password" id="confirmPassword" class="admin-input" required placeholder="Përsërit fjalëkalimin e ri...">
+            <button type="button" class="admin-eye-btn" onclick="togglePasswordVisibility('confirmPassword', this)">👁️</button>
+          </div>
+        </div>
+        <div style="display: flex; gap: 10px; margin-top: 15px;">
+          <button type="submit" class="admin-btn" style="flex: 1;">Ruaj Fjalëkalimin</button>
+          <button type="button" class="admin-btn" style="flex: 1; background: var(--card-bg); color: var(--text-main); border: 1px solid var(--border-color);" onclick="togglePasswordSection()">Anulo</button>
+        </div>
+      </form>
+    </div>
     <!-- Formulari i Shtimit/Editimit të Produktit -->
     <div class="admin-card">
       <form id="addProductForm" onsubmit="submitProduct(event)">

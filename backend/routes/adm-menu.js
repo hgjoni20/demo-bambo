@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const db = require('./db'); // përdor lidhjen e përbashkët me SQLite
-
+const db = require('./db'); 
 
 // READ: Merr të gjitha produktet nga menu_items për panelin e adminit
 router.get('/', (req, res) => {

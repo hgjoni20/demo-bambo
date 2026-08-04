@@ -274,3 +274,32 @@
 .admin-delete-btn:hover {
   opacity: 0.85;
 }
+
+/* Stilim për inputet e fjalëkalimit me ikonën e syrit */
+.admin-password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.admin-password-wrapper .admin-input {
+  padding-right: 45px;
+}
+
+.admin-eye-btn {
+  position: absolute;
+  right: 12px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+}
+
+.admin-eye-btn:hover {
+  color: var(--accent-gold);
+}
