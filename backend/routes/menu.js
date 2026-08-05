@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const sqlite3 = require('../.gitignore/node_modules/sqlite3/lib/sqlite3').verbose();
+const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 
 // Lidhja me databazën menu.db

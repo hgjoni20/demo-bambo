@@ -1,4 +1,4 @@
-require('dotenv').config({ path: __dirname + '/.gitignore/.env' });
+require('dotenv').config({ path: __dirname + '/.env' });
 const express = require('express');
 const path = require('path');
 const session = require('express-session'); // 1. import lart
