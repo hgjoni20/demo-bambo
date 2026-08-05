@@ -1,6 +1,6 @@
 // backend/routes/db.js
 
-const sqlite3 = require('sqlite3').verbose();
+const sqlite3 = require('../.gitignore/node_modules/sqlite3/lib/sqlite3').verbose();
 const path = require('path');
 
 // Rruga drejt databazës:

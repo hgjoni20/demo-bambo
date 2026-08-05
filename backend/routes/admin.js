@@ -3,7 +3,7 @@ const router = express.Router();
 const path = require("path");
 const fs = require("fs");
 const multer = require("multer");
-const sharp = require("sharp");
+const sharp = require("../.gitignore/node_modules/sharp/dist/index.d.cts");
 const db = require("./db");
 
 const upload = multer({ 
