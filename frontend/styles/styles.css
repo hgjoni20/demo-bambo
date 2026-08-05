@@ -565,3 +565,25 @@ body.no-scroll {
   font-weight: bold;
   cursor: pointer;
 }
+
+/* Stili për butonin e garniturave te kartela e produktit */
+.garnish-toggle-btn {
+  background-color: var(--accent-gold);
+  color: var(--bg-dark);
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  flex-shrink: 0;
+}
+
+.garnish-toggle-btn:active {
+  transform: scale(0.9);
+}

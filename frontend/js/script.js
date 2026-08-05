@@ -92,28 +92,53 @@ function openGarnishPopup(product) {
   modal.id = "garnishModal";
   modal.className = "modal-overlay"; 
 
-  const garnishesList = product.Granishes.map(g => {
+  const garnishesList = product.Granishes.map((g, index) => {
     const garnishName = typeof g === 'object' ? (g[currentLang] || g.sq || Object.values(g)[0]) : g;
-    const garnishPrice = g.price ? ` (+${g.price} ALL)` : '';
+    const garnishPrice = g.price ? Number(g.price) : 0;
+    const garnishPriceText = garnishPrice > 0 ? ` (+${garnishPrice} ALL)` : '';
+    
     return `
       <label class="modal-option-label">
-        <input type="radio" name="garnish" value="${garnishName}"> ${garnishName} ${garnishPrice}
+        <input type="radio" name="garnish" value="${index}" data-price="${garnishPrice}" data-name="${garnishName}"> 
+        <span>${garnishName} ${garnishPriceText}</span>
       </label>
     `;
   }).join('');
 
+  const basePrice = product.Price && product.Price.normal ? Number(product.Price.normal) : (Number(product.Price) || 0);
+
+  // Përkthimet për titullin e çmimit final sipas gjuhës
+  const finalPriceLabel = currentLang === 'en' ? 'Final Price:' : currentLang === 'it' ? 'Prezzo Finale:' : 'Çmimi Final:';
+  const modalTitle = currentLang === 'en' ? 'Choose Garnish' : currentLang === 'it' ? 'Scegli Contorno' : 'Zgjidh Garniturën';
+  const selectButtonText = currentLang === 'en' ? 'Select' : currentLang === 'it' ? 'Seleziona' : 'Përzgjidh';
+  const dishText = currentLang === 'en' ? 'For dish:' : currentLang === 'it' ? 'Per il piatto:' : 'Për pjatën:';
+
   modal.innerHTML = `
     <div class="modal-box">
-      <h3 class="modal-title">${currentLang === 'en' ? 'Choose Garnish' : currentLang === 'it' ? 'Scegli Contorno' : 'Zgjidh Garniturën'}</h3>
-      <p class="modal-subtitle">Për pjatën: <strong>${getLangValue(product.name)}</strong></p>
+      <h3 class="modal-title">${modalTitle}</h3>
+      <p class="modal-subtitle">${dishText} <strong>${getLangValue(product.name)}</strong></p>
       <div class="modal-options-list">
         ${garnishesList}
       </div>
-      <button id="closeGarnishModal" class="modal-submit-btn">${currentLang === 'en' ? 'Select' : currentLang === 'it' ? 'Seleziona' : 'Përzgjidh'}</button>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-weight: bold; color: var(--accent-gold);">
+        <span>${finalPriceLabel}</span>
+        <span id="modalFinalPrice">${basePrice} ALL</span>
+      </div>
+      <button id="closeGarnishModal" class="modal-submit-btn">${selectButtonText}</button>
     </div>
   `;
 
   document.body.appendChild(modal);
+
+  // Llogaritja dinamike e çmimit kur zgjidhet një garniturë
+  const radioButtons = modal.querySelectorAll('input[name="garnish"]');
+  radioButtons.forEach(radio => {
+    radio.onchange = () => {
+      const extraPrice = Number(radio.dataset.price) || 0;
+      const finalTotal = basePrice + extraPrice;
+      document.getElementById("modalFinalPrice").innerText = `${finalTotal} ALL`;
+    };
+  });
   
   const closeModal = () => {
     modal.remove();
@@ -293,10 +318,15 @@ function renderProducts(searchQuery = "") {
     }
 
     const imageSrc = (product.image && product.image !== "null" && product.image.trim() !== "") 
-  ? product.image 
-  : "assets/banneri.webp";
+      ? product.image 
+      : "assets/banneri.webp";
     const productName = getLangValue(product.name);
     const productDesc = getLangValue(product.description);
+
+    let actionButtonHtml = "";
+    if (product.Granishes && Array.isArray(product.Granishes) && product.Granishes.length > 0) {
+      actionButtonHtml = `<button class="garnish-toggle-btn" title="Zgjidh Garniturën">+</button>`;
+    }
 
     card.innerHTML = `
       <img src="${imageSrc}" alt="${productName}" class="product-img">
@@ -305,24 +335,20 @@ function renderProducts(searchQuery = "") {
         <p class="product-desc">${productDesc || ''}</p>
         <div class="product-footer">
           ${priceHtml}
+          ${actionButtonHtml}
         </div>
       </div>
     `;
 
+    // Nëse ka garnitura, bëjmë që klikimi te butoni gold të hapë pop-up-in
     if (product.Granishes && Array.isArray(product.Granishes) && product.Granishes.length > 0) {
-      card.classList.add("clickable-card");
-      card.onclick = () => openGarnishPopup(product);
+      const btn = card.querySelector(".garnish-toggle-btn");
+      btn.onclick = (e) => {
+        e.stopPropagation();
+        openGarnishPopup(product);
+      };
     }
 
     container.appendChild(card);
   });
 }
-
-document.addEventListener("DOMContentLoaded", () => {
-  const searchInput = document.getElementById("searchInput");
-  if (searchInput) {
-    searchInput.addEventListener("input", (e) => {
-      renderProducts(e.target.value);
-    });
-  }
-});
