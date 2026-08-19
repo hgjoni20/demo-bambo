@@ -31,7 +31,6 @@ app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/admin.html'));
 });
 
-// 3. TANI routes admin e KANË req.session gati kur arrijnë këtu
 app.use('/api/admin/all-products', admMenuRouter);
 app.use('/api/admin', adminRouter);
 app.use('/api/menu', menuRouter);

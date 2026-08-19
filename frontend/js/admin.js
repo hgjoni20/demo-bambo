@@ -334,13 +334,20 @@ function fillGarnishFields(garnishes) {
   garnishes.forEach((g) => {
     const row = addGarnishField();
 
-    row.querySelector(".g-sq").value = g.sq || "";
 
-    row.querySelector(".g-en").value = g.en || g.sq || "";
+    const name = g.name || g.sq || "";
 
-    row.querySelector(".g-it").value = g.it || g.sq || "";
+    row.querySelector(".g-sq").value =
+      g.sq || name;
 
-    row.querySelector(".g-price").value = g.price || "";
+    row.querySelector(".g-en").value =
+      g.en || name;
+
+    row.querySelector(".g-it").value =
+      g.it || name;
+
+    row.querySelector(".g-price").value =
+      g.price ?? "";
   });
 }
 
