@@ -21,35 +21,38 @@ router.get('/', (req, res) => {
     }
 
     // Transformimi i rreshtave të SQLite në strukturën e dëshiruar JSON
-   const formattedMenu = rows.map(row => {
-  return {
-    id: row.original_json_id || row.id,
-    category: [
-      { en: row.category_en || "" },
-      { sq: row.category_sq || "" },
-      { it: row.category_it || "" }
-    ],
-    name: [
-      { en: row.name_en || "" },
-      { sq: row.name_sq || "" },
-      { it: row.name_it || "" }
-    ],
-    description: [
-      { en: row.description_en || "" },
-      { sq: row.description_sq || "" },
-      { it: row.description_it || "" }
-    ],
-    Price: row.price_family
-      ? { normal: row.price, family: row.price_family }
-      : { normal: row.price },
+    const formattedMenu = rows.map(row => {
+      return {
+        id: row.original_json_id || row.id,
+        category: [
+          { en: row.category_en || "" },
+          { sq: row.category_sq || "" },
+          { it: row.category_it || "" }
+        ],
+        name: [
+          { en: row.name_en || "" },
+          { sq: row.name_sq || "" },
+          { it: row.name_it || "" }
+        ],
+        description: [
+          { en: row.description_en || "" },
+          { sq: row.description_sq || "" },
+          { it: row.description_it || "" }
+        ],
+        Price: row.price_family
+          ? { normal: row.price, family: row.price_family }
+          : { normal: row.price },
 
-    image: row.image || "",
+        image: row.image || "",
 
-    Granishes: row.garnishes_sq
-      ? JSON.parse(row.garnishes_sq)
-      : null
-  };
-});
+      
+        garnishes: [
+          { sq: row.garnishes_sq || "" },
+          { it: row.garnishes_it || "" },
+          { en: row.garnishes_en || "" }
+        ]
+      };
+    });
 
     res.json(formattedMenu);
   });

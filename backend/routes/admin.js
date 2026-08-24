@@ -309,10 +309,13 @@ router.put("/products/:id", requireAdmin, upload.single("imageFile"), async (req
 
     const nameObj = JSON.parse(name);
     const categoryObj = JSON.parse(category);
-
     const descriptionObj = description ? JSON.parse(description) : [];
-
     const garnishObj = garnishes ? JSON.parse(garnishes) : [];
+
+    // Ndajmë garniturat sipas gjuhës në formatin e duhur
+    const garnishesSq = garnishObj.map(g => ({ name: g.sq || "", price: Number(g.price) || 0 }));
+    const garnishesIt = garnishObj.map(g => ({ name: g.it || g.sq || "", price: Number(g.price) || 0 }));
+    const garnishesEn = garnishObj.map(g => ({ name: g.en || g.sq || "", price: Number(g.price) || 0 }));
 
     db.get(
       `SELECT image FROM menu_items WHERE id=?`,
@@ -357,7 +360,6 @@ router.put("/products/:id", requireAdmin, upload.single("imageFile"), async (req
         }
 
         const query = `
-
 UPDATE menu_items SET
 
 category_sq=?,
@@ -382,12 +384,10 @@ garnishes_it=?,
 garnishes_en=?
 
 WHERE id=?
-
 `;
 
         db.run(
           query,
-
           [
             getLangValue(categoryObj, "sq"),
             getLangValue(categoryObj, "it"),
@@ -406,13 +406,12 @@ WHERE id=?
 
             imagePath,
 
-            JSON.stringify(garnishObj),
-            JSON.stringify(garnishObj),
-            JSON.stringify(garnishObj),
+            JSON.stringify(garnishesSq),
+            JSON.stringify(garnishesIt),
+            JSON.stringify(garnishesEn),
 
             productId,
           ],
-
           function (err) {
             if (err)
               return res.status(500).json({
