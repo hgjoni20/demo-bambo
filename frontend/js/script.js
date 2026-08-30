@@ -92,8 +92,24 @@ function openGarnishPopup(product) {
   modal.id = "garnishModal";
   modal.className = "modal-overlay"; 
 
-  const garnishesList = product.Granishes.map((g, index) => {
-    const garnishName = typeof g === 'object' ? (g[currentLang] || g.sq || Object.values(g)[0]) : g;
+  // Marrim garniturat për gjuhën aktuale
+  let garnishesArray = [];
+  if (product.garnishes) {
+    if (Array.isArray(product.garnishes)) {
+      // Nëse është array, marrim elementin e gjuhës aktuale ose e parserojmë
+      const langObj = product.garnishes.find(g => g[currentLang]) || product.garnishes[0];
+      if (langObj && langObj[currentLang]) {
+        garnishesArray = typeof langObj[currentLang] === 'string' 
+          ? JSON.parse(langObj[currentLang]) 
+          : langObj[currentLang];
+      } else if (typeof product.garnishes === 'string') {
+        garnishesArray = JSON.parse(product.garnishes);
+      }
+    }
+  }
+
+  const garnishesList = garnishesArray.map((g, index) => {
+    const garnishName = g.name || "";
     const garnishPrice = g.price ? Number(g.price) : 0;
     const garnishPriceText = garnishPrice > 0 ? ` (+${garnishPrice} ALL)` : '';
     
@@ -107,7 +123,6 @@ function openGarnishPopup(product) {
 
   const basePrice = product.Price && product.Price.normal ? Number(product.Price.normal) : (Number(product.Price) || 0);
 
-  // Përkthimet për titullin e çmimit final sipas gjuhës
   const finalPriceLabel = currentLang === 'en' ? 'Final Price:' : currentLang === 'it' ? 'Prezzo Finale:' : 'Çmimi Final:';
   const modalTitle = currentLang === 'en' ? 'Choose Garnish' : currentLang === 'it' ? 'Scegli Contorno' : 'Zgjidh Garniturën';
   const selectButtonText = currentLang === 'en' ? 'Select' : currentLang === 'it' ? 'Seleziona' : 'Përzgjidh';
@@ -130,7 +145,6 @@ function openGarnishPopup(product) {
 
   document.body.appendChild(modal);
 
-  // Llogaritja dinamike e çmimit kur zgjidhet një garniturë
   const radioButtons = modal.querySelectorAll('input[name="garnish"]');
   radioButtons.forEach(radio => {
     radio.onchange = () => {
@@ -181,7 +195,6 @@ function initCategories() {
   renderProducts();
 }
 
-
 function renderMainCategories(cats) {
   const container = document.getElementById("mainCategories");
   if (!container) return;
@@ -206,7 +219,6 @@ function renderMainCategories(cats) {
     container.appendChild(btn);
   });
 
-  // Scroll horizontal me rrotullën e mouse-it në PC
   container.onwheel = (e) => {
     if (e.deltaY !== 0) {
       e.preventDefault();
@@ -217,9 +229,8 @@ function renderMainCategories(cats) {
   enableDragScroll(container);
 }
 
-
 function enableDragScroll(container) {
-  if (container.dataset.dragEnabled) return; // mos e lidh 2 herë
+  if (container.dataset.dragEnabled) return;
   container.dataset.dragEnabled = "true";
 
   let isDown = false;
@@ -227,12 +238,11 @@ function enableDragScroll(container) {
   let scrollStart = 0;
   let moved = false;
 
-  const DRAG_THRESHOLD = 6; // px minimale për ta konsideruar "tërheqje" jo "klik"
+  const DRAG_THRESHOLD = 6;
 
   container.addEventListener("mousedown", (e) => {
     isDown = true;
     moved = false;
-
     startX = e.pageX;
     scrollStart = container.scrollLeft;
   });
@@ -253,15 +263,13 @@ function enableDragScroll(container) {
     if (Math.abs(delta) > DRAG_THRESHOLD) {
       if (!moved) {
         moved = true;
-        container.classList.add("dragging"); // tani aktivizohet pointer-events:none te butonat
+        container.classList.add("dragging");
       }
       e.preventDefault();
       container.scrollLeft = scrollStart - delta;
     }
   });
 
-  // Pengon që klikimi (butoni i kategorisë) të aktivizohet
-  // rastësisht nëse useri po tërhiqte (dragging), jo duke klikuar.
   container.addEventListener(
     "click",
     (e) => {
@@ -324,7 +332,13 @@ function renderProducts(searchQuery = "") {
     const productDesc = getLangValue(product.description);
 
     let actionButtonHtml = "";
-    if (product.Granishes && Array.isArray(product.Granishes) && product.Granishes.length > 0) {
+    
+    const hasValidGarnishes = product.garnishes && Array.isArray(product.garnishes) && product.garnishes.some(g => {
+      const text = g[currentLang] || g.sq || Object.values(g)[0] || "";
+      return text.trim() !== "";
+    });
+
+    if (hasValidGarnishes) {
       actionButtonHtml = `<button class="garnish-toggle-btn" title="Zgjidh Garniturën">+</button>`;
     }
 
@@ -340,13 +354,14 @@ function renderProducts(searchQuery = "") {
       </div>
     `;
 
-    // Nëse ka garnitura, bëjmë që klikimi te butoni gold të hapë pop-up-in
-    if (product.Granishes && Array.isArray(product.Granishes) && product.Granishes.length > 0) {
+    if (hasValidGarnishes) {
       const btn = card.querySelector(".garnish-toggle-btn");
-      btn.onclick = (e) => {
-        e.stopPropagation();
-        openGarnishPopup(product);
-      };
+      if (btn) {
+        btn.onclick = (e) => {
+          e.stopPropagation();
+          openGarnishPopup(product);
+        };
+      }
     }
 
     container.appendChild(card);

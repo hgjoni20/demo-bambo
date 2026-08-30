@@ -5,13 +5,26 @@ const fs = require("fs");
 const multer = require("multer");
 const sharp = require("sharp");
 const db = require("./db");
+const { rateLimit } = require('express-rate-limit');
 
+
+//limit per madhesine e skedarit deri ne 10Mb 
 const upload = multer({ 
   storage: multer.memoryStorage(),
   limits: { 
     fileSize: 10 * 1024 * 1024 
   }
 });
+
+//limituesi i tentativave te password
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, 
+  max: 20, 
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "Shume Tentativa te gabuara ju lutem prisni 15 minuta" }
+});
+
 const requireAdmin = require('../middleware/requireAdmin');
 const bcrypt = require('bcrypt');
 
@@ -71,32 +84,67 @@ router.put('/password', requireAdmin, async (req, res) => {
   }
 });
 
-router.post('/login', async (req, res) => {
+// router per krahasimin e hashit me password nga admin pannel
+router.post('/login', loginLimiter, async (req, res) => {
   const { password } = req.body;
 
   if (!password) {
     return res.status(400).json({ error: "Fut fjalëkalimin." });
   }
 
-  // Marrim të vetmin admin që ekziston në tabelë
+ 
   db.get(`SELECT * FROM admin LIMIT 1`, async (err, admin) => {
     if (err || !admin) {
       return res.status(401).json({ error: "Gabim në sistem." });
     }
 
+    const now = Date.now();
+    
+
+    if (admin.lockout_until && admin.lockout_until > now) {
+      const minutesLeft = Math.ceil((admin.lockout_until - now) / 60000);
+      return res.status(429).json({ 
+        error: `Shumë tentativa të gabuara. Paneli është i bllokuar për edhe ${minutesLeft} minuta.` 
+      });
+    }
+
+  
     const match = await bcrypt.compare(password, admin.password_hash);
+    
     if (!match) {
+    
+      const newAttempts = (admin.failed_attempts || 0) + 1;
+      let lockoutTime = null;
+
+  
+      if (newAttempts >= 20) {
+        lockoutTime = now + (15 * 60 * 1000); 
+      }
+
+      db.run(
+        `UPDATE admin SET failed_attempts = ?, lockout_until = ? WHERE id = ?`,
+        [newAttempts, lockoutTime, admin.id]
+      );
+
       return res.status(401).json({ error: "Fjalëkalim i gabuar." });
     }
 
-    req.session.isAdmin = true;
-    res.json({ success: true, message: "Je loguar me sukses!" });
+    db.run(
+      `UPDATE admin SET failed_attempts = 0, lockout_until = NULL WHERE id = ?`,
+      [admin.id],
+      (err) => {
+        if (err) {
+          return res.status(500).json({ error: "Gabim në databazë." });
+        }
+        
+        req.session.isAdmin = true;
+        res.json({ success: true, message: "Je loguar me sukses!" });
+      }
+    );
   });
 });
 
-// Route për logout — PA requireAdmin gjithashtu.
-// FIX: logout duhet të funksionojë GJITHMONË, edhe nëse session-i ka skaduar
-// tashmë ose s'është valid — përndryshe useri merr gabim kur shtyp "Dil".
+// router i cili ben kerkesen e pastrimit te cookie isAdminLoggedIn
 router.post('/logout', (req, res) => {
   req.session.destroy(() => {
     res.clearCookie('connect.sid');
@@ -104,7 +152,7 @@ router.post('/logout', (req, res) => {
   });
 });
 
-
+//router i menaxhimit te fotove dhe uploads 
 router.use((req, res, next) => {
   console.log("🔥 ADMIN ROUTE:", req.method, req.originalUrl);
   next();
@@ -139,7 +187,7 @@ function generateImageName(uploadDir) {
   return filename;
 }
 
-// Merr vlerën sipas gjuhës nga array JSON
+
 function getLangValue(arr, lang) {
   if (!Array.isArray(arr)) return "";
 
@@ -148,10 +196,7 @@ function getLangValue(arr, lang) {
   return item ? item[lang] : "";
 }
 
-// CREATE PRODUCT
-// FIX: shtuar "requireAdmin" — më parë KUSHDO mund të thërriste këtë endpoint
-// direkt (p.sh. me Postman/fetch), pa u loguar fare, sepse asnjë kontroll
-// autentikimi s'ekzistonte në backend (vetëm në frontend, që s'mbron asgjë).
+
 router.post("/products", requireAdmin, upload.single("imageFile"), async (req, res) => {
   try {
     const {
@@ -309,10 +354,13 @@ router.put("/products/:id", requireAdmin, upload.single("imageFile"), async (req
 
     const nameObj = JSON.parse(name);
     const categoryObj = JSON.parse(category);
-
     const descriptionObj = description ? JSON.parse(description) : [];
-
     const garnishObj = garnishes ? JSON.parse(garnishes) : [];
+
+    // Ndajmë garniturat sipas gjuhës në formatin e duhur
+    const garnishesSq = garnishObj.map(g => ({ name: g.sq || "", price: Number(g.price) || 0 }));
+    const garnishesIt = garnishObj.map(g => ({ name: g.it || g.sq || "", price: Number(g.price) || 0 }));
+    const garnishesEn = garnishObj.map(g => ({ name: g.en || g.sq || "", price: Number(g.price) || 0 }));
 
     db.get(
       `SELECT image FROM menu_items WHERE id=?`,
@@ -357,7 +405,6 @@ router.put("/products/:id", requireAdmin, upload.single("imageFile"), async (req
         }
 
         const query = `
-
 UPDATE menu_items SET
 
 category_sq=?,
@@ -382,12 +429,10 @@ garnishes_it=?,
 garnishes_en=?
 
 WHERE id=?
-
 `;
 
         db.run(
           query,
-
           [
             getLangValue(categoryObj, "sq"),
             getLangValue(categoryObj, "it"),
@@ -406,13 +451,12 @@ WHERE id=?
 
             imagePath,
 
-            JSON.stringify(garnishObj),
-            JSON.stringify(garnishObj),
-            JSON.stringify(garnishObj),
+            JSON.stringify(garnishesSq),
+            JSON.stringify(garnishesIt),
+            JSON.stringify(garnishesEn),
 
             productId,
           ],
-
           function (err) {
             if (err)
               return res.status(500).json({
