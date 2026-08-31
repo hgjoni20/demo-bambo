@@ -11,13 +11,13 @@
 
 <!-- Navbar Minimaliste -->
   <nav class="app-navbar">
-    <button class="nav-icon-btn" onclick="openMenuDrawer()" title="Menu">
+    <button class="nav-icon-btn" id="openMenuDrawerBtn" title="Menu">
       ☰
     </button>
     <div class="nav-logo">Bambo Pizza Bar</div>
 
-    <button class="nav-icon-btn" onclick="toggleSearch()" title="Kërko">
-      <img src="assets/loop.png" class="btn-location">
+    <button class="nav-icon-btn" id="toggleSearchBtn" title="Kërko">
+      <img src="assets/loop.png" class="btn-location" alt="Search">
     </button>
   </nav>
 
@@ -45,28 +45,28 @@
         <p><a href="tel:+355694884550" class="nn">+355694884550</a></p>
       </div>
       <div class="footer-links">
-        <a href="https://www.instagram.com/bambo_pizza?igsh=MW4zMTRjeWNoMG9tYg==" target="_blank" class="footer-btn"><img class="btn-location" src="assets/instagram.png">Instagram</a>
-        <a href="https://maps.app.goo.gl/j15mpzdMriJyNZQN9" target="_blank" class="footer-btn"> <img class="btn-location" src="assets/map.png">Location</a>
-        <a href="https://wa.me/355694884550" target="_blank" class="footer-btn"><img class="btn-location" src="assets/whatsapp(1).png">Contact</a>
+        <a href="https://www.instagram.com/bambo_pizza?igsh=MW4zMTRjeWNoMG9tYg==" target="_blank" class="footer-btn"><img class="btn-location" src="assets/instagram.png" alt="Instagram">Instagram</a>
+        <a href="https://maps.app.goo.gl/j15mpzdMriJyNZQN9" target="_blank" class="footer-btn"> <img class="btn-location" src="assets/map.png" alt="Map">Location</a>
+        <a href="https://wa.me/355694884550" target="_blank" class="footer-btn"><img class="btn-location" src="assets/whatsapp(1).png" alt="WhatsApp">Contact</a>
       </div>
 
       <div class="footer-bottom">
-&copy; 2026 <a href="about.html" target="_blank" class="nn">h.gjoni20</a>. All Rights Reserved. Developed exclusively for Bambo Pizza Bar.
+        &copy; 2026 <a href="about.html" target="_blank" class="nn">h.gjoni20</a>. All Rights Reserved. Developed exclusively for Bambo Pizza Bar.
       </div>
     </div>
   </footer>
 
 <!-- Drawer Menu (Hamburger Panel) -->
-  <div class="drawer-overlay" id="drawerOverlay" onclick="closeMenuDrawer()">
-    <div class="drawer-content" onclick="event.stopPropagation()">
+  <div class="drawer-overlay" id="drawerOverlay">
+    <div class="drawer-content" id="drawerContentBox">
       <div class="drawer-header">
         <h3>Bambo Menu</h3>
-        <button class="close-drawer-btn" onclick="closeMenuDrawer()">✕</button>
+        <button class="close-drawer-btn" id="closeMenuDrawerBtn">✕</button>
       </div>
       <div class="drawer-body">
         <div class="drawer-section">
           <label id="langLabel" style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px; display:block;">Gjuha / Language</label>
-          <select id="langSelector" class="drawer-select" onchange="changeLanguage(this.value)">
+          <select id="langSelector" class="drawer-select">
             <option value="sq">🇦🇱 Shqip</option>
             <option value="en">🇬🇧 English</option>
             <option value="it">🇮🇹 Italiano</option>
@@ -80,7 +80,7 @@
   </div>
 
 <!-- Butoni Back to Top -->
-  <button class="back-to-top" id="backToTopBtn" onclick="scrollToTop()">↑</button>
+  <button class="back-to-top" id="backToTopBtn">↑</button>
 
   <script src="js/script.js?v=2"></script>
 </body>

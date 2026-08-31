@@ -14,13 +14,12 @@
   <div id="loginSection" class="login-container">
     <div class="admin-card">
       <h2 class="section-title admin-title-center">Admin Login</h2>
-      <!-- Forma lejon shtypjen e Enter nga PC -->
-      <form onsubmit="handleLogin(event)">
+      <form id="loginForm">
         <div class="admin-form-group">
           <label for="adminPassword">Fjalëkalimi i Panelit</label>
           <div class="admin-password-wrapper">
             <input type="password" id="adminPassword" class="admin-input" required placeholder="Fut fjalëkalimin...">
-            <button type="button" class="admin-eye-btn" onclick="togglePasswordVisibility('adminPassword', this)">👁️</button>
+            <button type="button" class="admin-eye-btn toggle-password-btn" data-target="adminPassword">👁️</button>
           </div>
           <span id="loginError" class="error-text hidden">Fjalëkalim i gabuar!</span>
         </div>
@@ -34,47 +33,47 @@
     <div class="admin-header-row">
       <h2 class="section-title" id="formTitle">Shto Produkt të Ri</h2>
       <div style="display: flex; gap: 10px; align-items: center;">
-        <button type="button" class="admin-btn" style="width: auto; padding: 10px 16px; font-size: 0.85rem; background: var(--card-bg); color: var(--accent-gold); border: 1px solid var(--accent-gold);" onclick="togglePasswordSection()">Ndrysho Fjalëkalimin</button>
-        <button class="footer-btn admin-logout-btn" onclick="handleLogout()">Dil (Logout)</button>
+        <button type="button" id="togglePasswordSecBtn" class="admin-btn" style="width: auto; padding: 10px 16px; font-size: 0.85rem; background: var(--card-bg); color: var(--accent-gold); border: 1px solid var(--accent-gold);">Ndrysho Fjalëkalimin</button>
+        <button type="button" id="logoutBtn" class="footer-btn admin-logout-btn">Dil (Logout)</button>
       </div>
     </div>
 
-    <!-- SEKTORI I FSHEHUR PËR NDRYSHIMIN E FJALËKALIMIT (Hapet me Buton) -->
+    <!-- SEKTORI I FSHEHUR PËR NDRYSHIMIN E FJALËKALIMIT -->
     <div id="passwordSectionCard" class="admin-card hidden">
       <h3 class="admin-subtitle">Ndrysho Fjalëkalimin e Adminit</h3>
-      <form id="changePasswordForm" onsubmit="handleChangePassword(event)">
+      <form id="changePasswordForm">
         <div class="admin-form-group">
           <label for="currentPassword">Fjalëkalimi Aktual</label>
           <div class="admin-password-wrapper">
             <input type="password" id="currentPassword" class="admin-input" required placeholder="Fjalëkalimi aktual...">
-            <button type="button" class="admin-eye-btn" onclick="togglePasswordVisibility('currentPassword', this)">👁️</button>
+            <button type="button" class="admin-eye-btn toggle-password-btn" data-target="currentPassword">👁️</button>
           </div>
         </div>
         <div class="admin-form-group">
           <label for="newPassword">Fjalëkalimi i Ri (Min. 6 karaktere)</label>
           <div class="admin-password-wrapper">
             <input type="password" id="newPassword" class="admin-input" required placeholder="Fjalëkalimi i ri...">
-            <button type="button" class="admin-eye-btn" onclick="togglePasswordVisibility('newPassword', this)">👁️</button>
+            <button type="button" class="admin-eye-btn toggle-password-btn" data-target="newPassword">👁️</button>
           </div>
         </div>
         <div class="admin-form-group">
           <label for="confirmPassword">Konfirmo Fjalëkalimin e Ri</label>
           <div class="admin-password-wrapper">
             <input type="password" id="confirmPassword" class="admin-input" required placeholder="Përsërit fjalëkalimin e ri...">
-            <button type="button" class="admin-eye-btn" onclick="togglePasswordVisibility('confirmPassword', this)">👁️</button>
+            <button type="button" class="admin-eye-btn toggle-password-btn" data-target="confirmPassword">👁️</button>
           </div>
         </div>
         <div style="display: flex; gap: 10px; margin-top: 15px;">
           <button type="submit" class="admin-btn" style="flex: 1;">Ruaj Fjalëkalimin</button>
-          <button type="button" class="admin-btn" style="flex: 1; background: var(--card-bg); color: var(--text-main); border: 1px solid var(--border-color);" onclick="togglePasswordSection()">Anulo</button>
+          <button type="button" id="cancelPasswordSecBtn" class="admin-btn" style="flex: 1; background: var(--card-bg); color: var(--text-main); border: 1px solid var(--border-color);">Anulo</button>
         </div>
       </form>
     </div>
+
     <!-- Formulari i Shtimit/Editimit të Produktit -->
     <div class="admin-card">
-      <form id="addProductForm" onsubmit="submitProduct(event)">
+      <form id="addProductForm">
         
-        <!-- Emri në 3 Gjuhë -->
         <h3 class="admin-subtitle">Emri i Produktit</h3>
         <div class="admin-lang-grid">
           <div class="admin-form-group">
@@ -91,18 +90,14 @@
           </div>
         </div>
 
-        <!-- Kategoritë me Checkbox dhe Butonin + -->
         <div class="admin-form-group" style="margin-top: 15px;">
           <div class="admin-category-header">
             <label style="margin: 0;">Zgjidh Kategoritë</label>
-            <button type="button" class="admin-add-cat-btn" onclick="openCategoryModal()">+ Shto Kategori të Re</button>
+            <button type="button" id="openCatModalBtn" class="admin-add-cat-btn">+ Shto Kategori të Re</button>
           </div>
-          <div id="categoriesCheckboxContainer" class="admin-checkbox-list">
-            <!-- Këtu ngarkohen kategoritë dinamikisht si checkbox-e -->
-          </div>
+          <div id="categoriesCheckboxContainer" class="admin-checkbox-list"></div>
         </div>
 
-        <!-- Çmimet -->
         <div class="admin-price-row" style="margin-top: 15px;">
           <div class="admin-form-group flex-1">
             <label for="prodPriceNormal">Çmimi Normal (ALL)</label>
@@ -114,7 +109,6 @@
           </div>
         </div>
 
-        <!-- Përshkrimi në 3 Gjuhë -->
         <h3 class="admin-subtitle" style="margin-top: 15px;">Përshkrimi i Produktit</h3>
         <div class="admin-lang-grid">
           <div class="admin-form-group">
@@ -131,27 +125,16 @@
           </div>
         </div>
 
-        <!-- Seksioni i Garniturave (Garnishes) në 3 Gjuhë -->
         <div class="admin-form-group" style="margin-top: 20px;">
           <div class="admin-category-header">
             <label style="margin: 0;">Garniturat (Opsionale)</label>
-            <button type="button" class="admin-add-cat-btn" onclick="addGarnishField()">+ Shto Garniturë</button>
+            <button type="button" id="addGarnishBtn" class="admin-add-cat-btn">+ Shto Garniturë</button>
           </div>
-          <div id="garnishListContainer" class="admin-garnish-container">
-            <!-- Këtu shtohen fushat dinamikisht me JavaScript -->
-          </div>
+          <div id="garnishListContainer" class="admin-garnish-container"></div>
         </div>
 
-        <!-- Upload Imazhi -->
         <div class="admin-form-group" style="margin-top: 20px;">
           <label for="prodImageFile">Ngarko Imazhin (Foto)</label>
-          <!--
-            FIX: u hoq "required" nga këtu. Më parë ishte gjithmonë e detyrueshme,
-            kështu që editimi i një produkti pa zgjedhur imazh të ri e bllokonte
-            submit-in në heshtje (browser-i s'linte fare të thirrej submitProduct()).
-            Tani e detyrueshme vetëm kur SHTON produkt të ri — kontrollohet
-            dinamikisht nga js/admin.js (resetAdminForm / startEditingProduct).
-          -->
           <input type="file" id="prodImageFile" class="admin-input" accept="image/*" style="padding: 8px;">
           <span id="imageHint" class="error-text hidden" style="color: var(--text-muted);">
             Lëre bosh nëse nuk do ta ndryshosh imazhin ekzistues.
@@ -159,18 +142,17 @@
         </div>
 
         <button type="submit" id="adminSubmitBtn" class="admin-btn" style="margin-top: 15px;">Shto Produktin</button>
-        <button type="button" id="cancelEditBtn" class="admin-cancel-edit-btn hidden" onclick="resetAdminForm()">Anulo Editimin</button>
+        <button type="button" id="cancelEditBtn" class="admin-cancel-edit-btn hidden">Anulo Editimin</button>
       </form>
     </div>
 
-    <!-- Lista e Produkteve Ekzistuese -->
     <h2 class="section-title">Produktet Ekzistuese</h2>
     <div class="admin-card">
       <div id="adminProductsList" class="products-list"></div>
     </div>
   </div>
 
-  <!-- MODAL: Paneli për Krijimin e Kategorisë së Re në 3 Gjuhë -->
+  <!-- MODAL: Paneli për Krijimin e Kategorisë së Re -->
   <div id="categoryModal" class="modal-overlay hidden">
     <div class="modal-box">
       <h3 class="modal-title">Shto Kategori të Re</h3>
@@ -190,8 +172,8 @@
       </div>
 
       <div style="display: flex; gap: 10px; margin-top: 20px;">
-        <button type="button" class="admin-btn" style="background: var(--card-bg); color: var(--text-main); border: 1px solid var(--border-color);" onclick="closeCategoryModal()">Anulo</button>
-        <button type="button" class="admin-btn" onclick="saveNewCategory()">Krijo Kategorinë</button>
+        <button type="button" id="closeCatModalBtn" class="admin-btn" style="background: var(--card-bg); color: var(--text-main); border: 1px solid var(--border-color);">Anulo</button>
+        <button type="button" id="saveCatBtn" class="admin-btn">Krijo Kategorinë</button>
       </div>
     </div>
   </div>

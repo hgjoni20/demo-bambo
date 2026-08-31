@@ -12,6 +12,52 @@ document.addEventListener("DOMContentLoaded", async () => {
   const langSelector = document.getElementById("langSelector");
   if (langSelector) langSelector.value = currentLang;
 
+  // Lidhja e eventeve të nav-it dhe drawer-it
+  const openDrawerBtn = document.getElementById("openMenuDrawerBtn");
+  if (openDrawerBtn) openDrawerBtn.addEventListener("click", openMenuDrawer);
+
+  const closeDrawerBtn = document.getElementById("closeMenuDrawerBtn");
+  if (closeDrawerBtn) closeDrawerBtn.addEventListener("click", closeMenuDrawer);
+
+  const drawerOverlay = document.getElementById("drawerOverlay");
+  if (drawerOverlay) {
+    drawerOverlay.addEventListener("click", (e) => {
+      if (e.target === drawerOverlay) closeMenuDrawer();
+    });
+  }
+
+  const drawerContentBox = document.getElementById("drawerContentBox");
+  if (drawerContentBox) {
+    drawerContentBox.addEventListener("click", (e) => {
+      e.stopPropagation();
+    });
+  }
+
+  const toggleSearchBtn = document.getElementById("toggleSearchBtn");
+  if (toggleSearchBtn) toggleSearchBtn.addEventListener("click", toggleSearch);
+
+  if (langSelector) {
+    langSelector.addEventListener("change", (e) => {
+      changeLanguage(e.target.value);
+    });
+  }
+
+  const backToTopBtn = document.getElementById("backToTopBtn");
+  if (backToTopBtn) {
+    backToTopBtn.addEventListener("click", scrollToTop);
+  }
+
+  // Zëvendësimi i window.onscroll
+  window.addEventListener("scroll", () => {
+    const backBtn = document.getElementById("backToTopBtn");
+    if (!backBtn) return;
+    if (window.scrollY > 300) {
+      backBtn.classList.add("show");
+    } else {
+      backBtn.classList.remove("show");
+    }
+  });
+
   await loadMenuData();
   applyStaticTranslations();
   initCategories(); 
@@ -96,7 +142,6 @@ function openGarnishPopup(product) {
   let garnishesArray = [];
   if (product.garnishes) {
     if (Array.isArray(product.garnishes)) {
-      // Nëse është array, marrim elementin e gjuhës aktuale ose e parserojmë
       const langObj = product.garnishes.find(g => g[currentLang]) || product.garnishes[0];
       if (langObj && langObj[currentLang]) {
         garnishesArray = typeof langObj[currentLang] === 'string' 
@@ -162,16 +207,6 @@ function openGarnishPopup(product) {
   document.getElementById("closeGarnishModal").onclick = closeModal;
   modal.onclick = (e) => { if (e.target === modal) closeModal(); };
 }
-
-window.onscroll = function() {
-  const backBtn = document.getElementById("backToTopBtn");
-  if (!backBtn) return;
-  if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
-    backBtn.classList.add("show");
-  } else {
-    backBtn.classList.remove("show");
-  }
-};
 
 function scrollToTop() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
