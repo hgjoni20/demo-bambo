@@ -343,7 +343,7 @@ function renderProducts(searchQuery = "") {
     }
 
     card.innerHTML = `
-      <img src="${imageSrc}" alt="${productName}" class="product-img">
+      <img src="${imageSrc}" alt="${productName}" class="product-img" loading="lazy">
       <div class="product-info">
         <h3 class="product-name">${productName}</h3>
         <p class="product-desc">${productDesc || ''}</p>
