@@ -12,7 +12,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const langSelector = document.getElementById("langSelector");
   if (langSelector) langSelector.value = currentLang;
 
-  // Lidhja e eventeve të nav-it dhe drawer-it
   const openDrawerBtn = document.getElementById("openMenuDrawerBtn");
   if (openDrawerBtn) openDrawerBtn.addEventListener("click", openMenuDrawer);
 
@@ -47,7 +46,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     backToTopBtn.addEventListener("click", scrollToTop);
   }
 
-  // Zëvendësimi i window.onscroll
   window.addEventListener("scroll", () => {
     const backBtn = document.getElementById("backToTopBtn");
     if (!backBtn) return;
@@ -138,7 +136,6 @@ function openGarnishPopup(product) {
   modal.id = "garnishModal";
   modal.className = "modal-overlay"; 
 
-  // Marrim garniturat për gjuhën aktuale
   let garnishesArray = [];
   if (product.garnishes) {
     if (Array.isArray(product.garnishes)) {
@@ -272,7 +269,6 @@ function enableDragScroll(container) {
   let startX = 0;
   let scrollStart = 0;
   let moved = false;
-
   const DRAG_THRESHOLD = 6;
 
   container.addEventListener("mousedown", (e) => {
@@ -367,7 +363,6 @@ function renderProducts(searchQuery = "") {
     const productDesc = getLangValue(product.description);
 
     let actionButtonHtml = "";
-    
     const hasValidGarnishes = product.garnishes && Array.isArray(product.garnishes) && product.garnishes.some(g => {
       const text = g[currentLang] || g.sq || Object.values(g)[0] || "";
       return text.trim() !== "";
@@ -377,8 +372,9 @@ function renderProducts(searchQuery = "") {
       actionButtonHtml = `<button class="garnish-toggle-btn" title="Zgjidh Garniturën">+</button>`;
     }
 
+    // Shtohen width="80" dhe height="80" për të eliminuar Cumulative Layout Shift (CLS)
     card.innerHTML = `
-      <img src="${imageSrc}" alt="${productName}" class="product-img">
+      <img src="${imageSrc}" alt="${productName}" class="product-img" width="80" height="80" loading="lazy">
       <div class="product-info">
         <h3 class="product-name">${productName}</h3>
         <p class="product-desc">${productDesc || ''}</p>

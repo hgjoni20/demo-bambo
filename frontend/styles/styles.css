@@ -113,7 +113,7 @@ body {
   margin: 0 auto;
   border-bottom: 1px solid var(--border-color);
   overflow: hidden;
-  min-width: 0; /* FIX: lejon që fëmija flex të mos e detyrojë containerin të zgjerohet */
+  min-width: 0;
 }
 
 .cat-scroll {
@@ -130,16 +130,13 @@ body {
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   box-sizing: border-box;
-  min-width: 0; /* FIX: siguri shtesë kundër overflow të "thyer" në flex containers */
+  min-width: 0;
+  cursor: grab;
+  user-select: none;
 }
 
 .cat-scroll::-webkit-scrollbar {
   display: none;
-}
-
-.cat-scroll {
-  cursor: grab;
-  user-select: none;
 }
 
 .cat-scroll.dragging {
@@ -147,7 +144,7 @@ body {
 }
 
 .cat-scroll.dragging .cat-btn {
-  pointer-events: none; /* mos u kliko butonat gabimisht ndërsa tërheq */
+  pointer-events: none;
 }
 
 .cat-btn {
@@ -222,9 +219,12 @@ body {
   transform: scale(0.98);
 }
 
+/* Përmasat fikse të imazhit për të eliminuar CLS */
 .product-img {
   width: 80px;
   height: 80px;
+  min-width: 80px;
+  min-height: 80px;
   border-radius: 10px;
   object-fit: cover;
   flex-shrink: 0;
@@ -493,10 +493,6 @@ body.no-scroll {
   padding: 20px;
 }
 
-.product-card.clickable-card {
-  cursor: pointer;
-}
-
 #backToTopBtn {
   display: none;
 }
@@ -566,7 +562,6 @@ body.no-scroll {
   cursor: pointer;
 }
 
-/* Stili për butonin e garniturave te kartela e produktit */
 .garnish-toggle-btn {
   background-color: var(--accent-gold);
   color: var(--bg-dark);

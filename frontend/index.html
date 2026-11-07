@@ -4,8 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bambo Pizza Bar - Menu</title>
+  
+  <!-- Preload stylesheet për të shmangur vonesën e vizatimit -->
+  <link rel="preload" href="styles/styles.css?v=2" as="style">
   <link rel="stylesheet" href="styles/styles.css?v=2">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Critical CSS inline për të parandaluar FOUC (Flash of Unstyled Content) -->
+  <style>
+    body {
+      margin: 0;
+      background-color: #0f1716;
+      color: #ffffff;
+      font-family: 'Inter', sans-serif;
+    }
+  </style>
 </head>
 <body>
 
@@ -17,7 +30,7 @@
     <div class="nav-logo">Bambo Pizza Bar</div>
 
     <button class="nav-icon-btn" id="toggleSearchBtn" title="Kërko">
-      <img src="assets/loop.png" class="btn-location" alt="Search">
+      <img src="assets/loop.png" class="btn-location" alt="Search" width="25" height="25">
     </button>
   </nav>
 
@@ -45,9 +58,9 @@
         <p><a href="tel:+355694884550" class="nn">+355694884550</a></p>
       </div>
       <div class="footer-links">
-        <a href="https://www.instagram.com/bambo_pizza?igsh=MW4zMTRjeWNoMG9tYg==" target="_blank" class="footer-btn"><img class="btn-location" src="assets/instagram.png" alt="Instagram">Instagram</a>
-        <a href="https://maps.app.goo.gl/j15mpzdMriJyNZQN9" target="_blank" class="footer-btn"> <img class="btn-location" src="assets/map.png" alt="Map">Location</a>
-        <a href="https://wa.me/355694884550" target="_blank" class="footer-btn"><img class="btn-location" src="assets/whatsapp(1).png" alt="WhatsApp">Contact</a>
+        <a href="https://www.instagram.com/bambo_pizza?igsh=MW4zMTRjeWNoMG9tYg==" target="_blank" class="footer-btn"><img class="btn-location" src="assets/instagram.png" alt="Instagram" width="25" height="25">Instagram</a>
+        <a href="https://maps.app.goo.gl/j15mpzdMriJyNZQN9" target="_blank" class="footer-btn"> <img class="btn-location" src="assets/map.png" alt="Map" width="25" height="25">Location</a>
+        <a href="https://wa.me/355694884550" target="_blank" class="footer-btn"><img class="btn-location" src="assets/whatsapp(1).png" alt="WhatsApp" width="25" height="25">Contact</a>
       </div>
 
       <div class="footer-bottom">
@@ -82,6 +95,6 @@
 <!-- Butoni Back to Top -->
   <button class="back-to-top" id="backToTopBtn">↑</button>
 
-  <script src="js/script.js?v=2"></script>
+  <script src="js/script.js?v=2" defer></script>
 </body>
 </html>
