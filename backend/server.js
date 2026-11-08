@@ -3,6 +3,7 @@ const express = require('express');
 const path = require('path');
 const session = require('express-session');
 const helmet = require('helmet'); 
+const errorHandler = require("./middleware/error")
 
 const menuRouter = require('./routes/menu');
 const adminRouter = require('./routes/admin');
@@ -53,11 +54,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend', 'index.html'));
 });
 
-app.use((err, req, res, next) => {
-  console.error('❌ Gabim i papritur në server:', err);
-  res.status(500).json({ error: 'Ndodhi një gabim i papritur në server.' });
-});
+app.use(errorHandler)
 
 app.listen(PORT, () => {
-  console.log(`Serveri po punon në ${PORT}`);
 });

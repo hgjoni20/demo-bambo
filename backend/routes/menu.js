@@ -3,7 +3,7 @@ const router = express.Router();
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 
-// Lidhja me databazën menu.db
+
 const dbPath = path.join(__dirname, '../db/menu.db');
 const db = new sqlite3.Database(dbPath, sqlite3.OPEN_READONLY, (err) => {
   if (err) {
@@ -11,16 +11,14 @@ const db = new sqlite3.Database(dbPath, sqlite3.OPEN_READONLY, (err) => {
   }
 });
 
-router.get('/', (req, res) => {
+router.get('/', (req, res, next) => {
   const query = `SELECT * FROM menu_items`;
 
   db.all(query, [], (err, rows) => {
     if (err) {
-      console.error(err);
-      return res.status(500).json({ error: "Gabim në server gjatë leximit të databazës" });
+      return next(err); 
     }
 
-    // Transformimi i rreshtave të SQLite në strukturën e dëshiruar JSON
     const formattedMenu = rows.map(row => {
       return {
         id: row.original_json_id || row.id,
@@ -45,7 +43,6 @@ router.get('/', (req, res) => {
 
         image: row.image || "",
 
-      
         garnishes: [
           { sq: row.garnishes_sq || "" },
           { it: row.garnishes_it || "" },

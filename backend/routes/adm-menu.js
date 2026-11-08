@@ -5,16 +5,12 @@ const db = require('./db');
 // READ: Merr të gjitha produktet nga menu_items për panelin e adminit
 router.get('/', (req, res) => {
 
-  console.log('🔥 ADM-MENU U THIRR!');
-
   db.all(`SELECT * FROM menu_items`, [], (err, rows) => {
 
     if (err) {
-      console.error('❌ Gabim gjatë leximit të menu_items:', err.message);
+      console.error('Gabim gjatë leximit:', err.message);
       return res.status(500).json({ error: err.message });
     }
-
-    console.log('📦 Numri i produkteve:', rows.length);
 
     try {
 
@@ -80,16 +76,13 @@ router.get('/', (req, res) => {
 
       });
 
-
-      console.log('✅ Produktet u formatizuan me sukses');
-
       res.json(formattedProducts);
 
 
     } catch (parseErr) {
 
       console.error(
-        '❌ Gabim gjatë formatimit të të dhënave:',
+        'Gabim gjatë formatimit të të dhënave:',
         parseErr.message
       );
 

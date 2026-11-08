@@ -104,7 +104,7 @@ router.post('/login', loginLimiter, async (req, res) => {
     if (admin.lockout_until && admin.lockout_until > now) {
       const minutesLeft = Math.ceil((admin.lockout_until - now) / 60000);
       return res.status(429).json({ 
-        error: `Shumë tentativa të gabuara. Paneli është i bllokuar për edhe ${minutesLeft} minuta.` 
+        error: `Shumë tentativa të gabuara. Paneli është i bllokuar për ${minutesLeft} minuta.` 
       });
     }
 
@@ -314,7 +314,7 @@ router.post("/products", requireAdmin, upload.single("imageFile"), async (req, r
 
       function (err) {
         if (err) {
-          console.error("❌ INSERT ERROR:", err.message);
+          console.error("INSERT ERROR:", err.message);
 
           return res.status(500).json({
             error: err.message,
@@ -329,7 +329,7 @@ router.post("/products", requireAdmin, upload.single("imageFile"), async (req, r
       },
     );
   } catch (err) {
-    console.error("❌ POST ERROR:", err);
+    console.error("POST ERROR:", err);
 
     res.status(500).json({
       error: err.message,
@@ -514,7 +514,6 @@ router.delete("/products/:id", requireAdmin, (req, res) => {
           try {
             fs.unlinkSync(imagePath);
 
-            console.log("🗑️ Fotoja u fshi:", imagePath);
           } catch (deleteErr) {
             console.error("Gabim gjatë fshirjes së fotos:", deleteErr.message);
           }
@@ -539,7 +538,7 @@ router.delete("/products/:id", requireAdmin, (req, res) => {
           res.json({
             success: true,
 
-            message: "Produkti dhe fotografia u fshinë me sukses!",
+            message: "Produkti u fshi me sukses!",
           });
         },
       );
