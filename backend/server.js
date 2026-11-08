@@ -3,7 +3,8 @@ const express = require('express');
 const path = require('path');
 const session = require('express-session');
 const helmet = require('helmet'); 
-const errorHandler = require("./middleware/error")
+const cors = require('cors');
+const errorHandler = require("./middleware/error");
 
 const menuRouter = require('./routes/menu');
 const adminRouter = require('./routes/admin');
@@ -12,6 +13,18 @@ const admMenuRouter = require('./routes/adm-menu');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// E detyrueshme për platformat si Render që përdorin proxy për HTTPS
+app.set('trust proxy', 1);
+
+// Konfigurimi i CORS
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production' 
+    ? 'https://demo-bambo.onrender.com' 
+    : 'http://localhost:3000',
+  credentials: true, 
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 app.use(helmet({
   contentSecurityPolicy: {
@@ -54,7 +67,8 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend', 'index.html'));
 });
 
-app.use(errorHandler)
+app.use(errorHandler);
 
 app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
