@@ -1,6 +1,6 @@
 let currentLang = localStorage.getItem('bambo_lang') || 'sq'; 
 let activeMainCat = "All"; 
-let menuData = []; 
+let menuData = JSON.parse(localStorage.getItem('bambo_menu_data')) || []; 
 
 const translations = {
   sq: { all: "Të gjitha", search: "Kërko ushqimin ose pijen..." },
@@ -35,6 +35,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   const toggleSearchBtn = document.getElementById("toggleSearchBtn");
   if (toggleSearchBtn) toggleSearchBtn.addEventListener("click", toggleSearch);
 
+  // Regjistrojmë eventin e kërkimit vetëm një herë këtu
+  const searchInput = document.getElementById("searchInput");
+  if (searchInput) {
+    searchInput.addEventListener("input", (e) => {
+      renderProducts(e.target.value);
+    });
+  }
+
   if (langSelector) {
     langSelector.addEventListener("change", (e) => {
       changeLanguage(e.target.value);
@@ -56,17 +64,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  await loadMenuData();
   applyStaticTranslations();
   initCategories(); 
+  await loadMenuData();
+  initCategories();
 });
 
 async function loadMenuData() {
-  const cachedData = localStorage.getItem('bambo_menu_data');
-  if (cachedData) {
-    menuData = JSON.parse(cachedData);
-  }
-
   try {
     const response = await fetch('/api/menu');
     if (!response.ok) throw new Error("Dështoi marrja e të dhënave nga serveri");
@@ -76,9 +80,6 @@ async function loadMenuData() {
     localStorage.setItem('bambo_menu_data', JSON.stringify(data));
   } catch (error) {
     console.error("Duke përdorur të dhënat e ruajtura lokalisht:", error);
-    if (!menuData.length) {
-      menuData = []; 
-    }
   }
 }
 
@@ -103,14 +104,6 @@ function toggleSearch() {
   const input = document.getElementById("searchInput");
   if (!container || !input) return;
   container.classList.toggle("active");
-
-
-  const searchInput = document.getElementById("searchInput");
-  if (searchInput) {
-    searchInput.addEventListener("input", (e) => {
-      renderProducts(e.target.value);
-    });
-  }
   
   if (container.classList.contains("active")) {
     input.focus();
