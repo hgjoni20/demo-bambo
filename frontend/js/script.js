@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const toggleSearchBtn = document.getElementById("toggleSearchBtn");
   if (toggleSearchBtn) toggleSearchBtn.addEventListener("click", toggleSearch);
 
-  // Regjistrojmë eventin e kërkimit vetëm një herë këtu
+
   const searchInput = document.getElementById("searchInput");
   if (searchInput) {
     searchInput.addEventListener("input", (e) => {
@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 async function loadMenuData() {
   try {
-    const response = await fetch('/api/menu');
+    const response = await fetch('/api/menu/');
     if (!response.ok) throw new Error("Dështoi marrja e të dhënave nga serveri");
     
     const data = await response.json();
@@ -322,6 +322,15 @@ function renderProducts(searchQuery = "") {
 
   if (titleEl) {
     titleEl.innerText = (activeMainCat === "All") ? translations[currentLang].all : activeMainCat;
+  }
+  
+  if (menuData.length === 0) {
+    container.innerHTML = `
+      <div class="spinner-container">
+        <div class="loading-spinner"></div>
+      </div>
+    `;
+    return;
   }
 
   const filteredProducts = menuData.filter(item => {
