@@ -103,6 +103,14 @@ function toggleSearch() {
   const input = document.getElementById("searchInput");
   if (!container || !input) return;
   container.classList.toggle("active");
+
+
+  const searchInput = document.getElementById("searchInput");
+  if (searchInput) {
+    searchInput.addEventListener("input", (e) => {
+      renderProducts(e.target.value);
+    });
+  }
   
   if (container.classList.contains("active")) {
     input.focus();
@@ -328,9 +336,8 @@ function renderProducts(searchQuery = "") {
     const matchesCategory = (activeMainCat === "All") || (itemCat === activeMainCat);
     
     const nameStr = getLangValue(item.name).toLowerCase();
-    const descStr = getLangValue(item.description).toLowerCase();
-    const query = searchQuery.toLowerCase();
-    const matchesSearch = !query || nameStr.includes(query) || descStr.includes(query);
+    const query = searchQuery.toLowerCase().trim();
+    const matchesSearch = !query || nameStr.includes(query);
 
     return matchesCategory && matchesSearch;
   });
@@ -372,7 +379,6 @@ function renderProducts(searchQuery = "") {
       actionButtonHtml = `<button class="garnish-toggle-btn" title="Zgjidh Garniturën">+</button>`;
     }
 
-    // Shtohen width="80" dhe height="80" për të eliminuar Cumulative Layout Shift (CLS)
     card.innerHTML = `
       <img src="${imageSrc}" alt="${productName}" class="product-img" width="80" height="80" loading="lazy">
       <div class="product-info">
