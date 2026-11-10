@@ -1,4 +1,3 @@
-/* Stilime të izoluara vetëm për Admin Panel */
 .admin-wrapper {
   max-width: 800px;
   margin: 30px auto;
@@ -68,7 +67,6 @@
   opacity: 0.9;
 }
 
-/* FIX: buton i ri për të anuluar editimin dhe rikthyer formularin te "shto produkt të ri" */
 .admin-cancel-edit-btn {
   background: transparent;
   border: 1px solid var(--border-color);
@@ -240,8 +238,7 @@
   }
 }
 
-/* FIX: butonat Edito/Fshi te lista e produkteve — më parë ishin inline style
-   brenda JS; tani janë klasa CSS të vërteta, më lehtë për t'u mirëmbajtur. */
+
 .admin-card-actions {
   display: flex;
   flex-direction: column;
@@ -275,7 +272,6 @@
   opacity: 0.85;
 }
 
-/* Stilim për inputet e fjalëkalimit me ikonën e syrit */
 .admin-password-wrapper {
   position: relative;
   display: flex;
