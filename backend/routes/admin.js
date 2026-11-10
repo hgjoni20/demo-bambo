@@ -22,7 +22,7 @@ const loginLimiter = rateLimit({
   max: 20, 
   standardHeaders: true,
   legacyHeaders: false,
-  message: { error: "Shume Tentativa te gabuara ju lutem prisni 15 minuta" }
+  message: { error: "Shume tentativa te gabuara!" }
 });
 
 const requireAdmin = require('../middleware/requireAdmin');
