@@ -244,7 +244,7 @@ router.post("/products", requireAdmin, upload.single("imageFile"), async (req, r
 
 
   await sharp(req.file.buffer)
-    .resize(800, 800, {
+    .resize(400, 400, {
       fit: "inside",
       withoutEnlargement: true,
     })
